@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from djnago.contrib.auth.models import USER
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 # Create your views here.
 def home(request):
@@ -17,6 +18,17 @@ def signup(request):
         password1 = request.POST['pass1']
         password2 = request.POST['pass2']
 
+        # make User  object and enter these values to it
+        myuser = User.objects.create_user(username,email,password1)
+        myuser.first_name = fname
+        myuser.last_name = lname
+
+        myuser.save()
+
+        # inbuilt message library of django
+        messages.success(request,"Your Account has been successfully created.")
+
+        return redirect('signin')
 
 
     
