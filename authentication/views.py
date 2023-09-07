@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login
 from django.contrib import messages
 
 # Create your views here.
@@ -18,7 +19,7 @@ def signup(request):
         password1 = request.POST['pass1']
         password2 = request.POST['pass2']
 
-<<<<<<< HEAD
+
         # make User  object and enter these values to it
         myuser = User.objects.create_user(username,email,password1)
         myuser.first_name = fname
@@ -30,11 +31,10 @@ def signup(request):
         messages.success(request,"Your Account has been successfully created.")
 
         return redirect('signin')
-=======
+
         myuser = User.objects.create_user(username,email,pass1)
         myuser.first_name = fname
         myuser.last_name = lname
->>>>>>> b4d6fcac844e1eab46e0cebe5cab71f7c2c3e572
 
         myuser.save()
 
@@ -42,11 +42,30 @@ def signup(request):
 
         return redirect('signin')    
 
-        #below line act like ELSE PART of IF-ELSE   condition
+    #below line act like ELSE PART of IF-ELSE   condition
     return render(request,"authentication/signup.html")
 
 def signin(request):
+
+    if request.method =='POST':
+        username = request.POST['username']
+        pass1 = request.POST['pass1']
+
+        user = authenticate(username=username,password=pass1)
+
+        if user is not None:
+            login(request,user)
+            fname = user.first_name
+            return render(request,"authentication/index.html",{'fname':fname})
+        else:
+            messages.error(request,"Bad Credentials!")
+            return redirect('home')
+
+
     return render(request,"authentication/signin.html")
+
+
+
 
 def signout(request):
     pass
